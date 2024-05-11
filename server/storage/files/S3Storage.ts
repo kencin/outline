@@ -50,6 +50,16 @@ export default class S3Storage extends BaseStorage {
     );
   }
 
+  public async getPresignedPut(key: string) {
+    const params = {
+      Bucket: env.AWS_S3_UPLOAD_BUCKET_NAME,
+      Key: key,
+      Expires: 3600,
+    };
+
+    return await this.client.getSignedUrlPromise("putObject", params);
+  }
+
   private getPublicEndpoint(isServerUpload?: boolean) {
     if (env.AWS_S3_ACCELERATE_URL) {
       return env.AWS_S3_ACCELERATE_URL;
@@ -136,10 +146,17 @@ export default class S3Storage extends BaseStorage {
       .promise();
   }
 
+  public getR2ObjectUrl = async (key: string) =>
+    env.AWS_S3_R2_PUBLIC_URL + "/" + key;
+
   public getSignedUrl = async (
     key: string,
     expiresIn = S3Storage.defaultSignedUrlExpires
   ) => {
+    if (env.AWS_S3_R2) {
+      return this.getR2ObjectUrl(key);
+    }
+
     const isDocker = env.AWS_S3_UPLOAD_BUCKET_URL.match(/http:\/\/s3:/);
     const params = {
       Bucket: env.AWS_S3_UPLOAD_BUCKET_NAME,

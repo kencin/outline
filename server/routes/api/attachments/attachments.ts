@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import { AttachmentPreset } from "@shared/types";
 import { bytesToHumanReadable } from "@shared/utils/files";
 import { AttachmentValidation } from "@shared/validations";
+import env from "@server/env";
 import { AuthorizationError, ValidationError } from "@server/errors";
 import auth from "@server/middlewares/authentication";
 import { rateLimiter } from "@server/middlewares/rateLimiter";
@@ -92,16 +93,30 @@ router.post(
       { transaction }
     );
 
-    const presignedPost = await FileStorage.getPresignedPost(
-      key,
-      acl,
-      maxUploadSize,
-      contentType
-    );
+    let uploadUrl;
+    let method;
+    let presignedPost = {
+      fields: {},
+    };
+    if (env.AWS_S3_R2) {
+      uploadUrl = await FileStorage.getPresignedPut(key);
+      method = "PUT";
+    } else {
+      uploadUrl = FileStorage.getUploadUrl();
+      method = "POST";
+
+      presignedPost = await FileStorage.getPresignedPost(
+        key,
+        acl,
+        maxUploadSize,
+        contentType
+      );
+    }
 
     ctx.body = {
       data: {
-        uploadUrl: FileStorage.getUploadUrl(),
+        uploadUrl,
+        method,
         form: {
           "Cache-Control": "max-age=31557600",
           "Content-Type": contentType,

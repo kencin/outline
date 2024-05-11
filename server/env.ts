@@ -494,6 +494,14 @@ export class Environment {
     environment.AWS_S3_UPLOAD_BUCKET_NAME
   );
 
+  @IsOptional()
+  public AWS_S3_R2 = this.toBoolean(environment.AWS_S3_R2 ?? "false");
+
+  @IsOptional()
+  public AWS_S3_R2_PUBLIC_URL = this.toOptionalString(
+    environment.AWS_S3_R2_PUBLIC_URL
+  );
+
   /**
    * Whether to force path style URLs for S3 objects, this is required for some
    * S3-compatible storage providers.

@@ -63,8 +63,13 @@ export const uploadFile = async (
     xhr.addEventListener("loadend", () => {
       resolve(xhr.readyState === 4 && xhr.status >= 200 && xhr.status < 400);
     });
-    xhr.open("POST", data.uploadUrl, true);
-    xhr.send(formData);
+    xhr.open(data.method, data.uploadUrl, true);
+    xhr.setRequestHeader("Content-Type", file.type);
+    if (data.method === "POST") {
+      xhr.send(formData);
+    } else {
+      xhr.send(file);
+    }
   });
 
   if (!success) {

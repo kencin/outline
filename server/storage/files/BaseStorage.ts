@@ -26,6 +26,8 @@ export default abstract class BaseStorage {
     contentType: string
   ): Promise<Partial<PresignedPost>>;
 
+  public abstract getPresignedPut(key: string): Promise<string>;
+
   /**
    * Returns a stream for reading a file from the storage provider.
    *
