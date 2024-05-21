@@ -105,7 +105,7 @@ export default class SearchHelper {
         "id",
         [
           Sequelize.literal(
-            `ts_rank("searchVector", to_tsquery('english', :query))`
+            `ts_rank("searchVector", to_tsquery('chinese_zh', :query))`
           ),
           "searchRanking",
         ],
@@ -236,7 +236,7 @@ export default class SearchHelper {
         "id",
         [
           Sequelize.literal(
-            `ts_rank("searchVector", to_tsquery('english', :query))`
+            `ts_rank("searchVector", to_tsquery('chinese_zh', :query))`
           ),
           "searchRanking",
         ],
@@ -469,7 +469,7 @@ export default class SearchHelper {
         where[Op.and].push(
           Sequelize.fn(
             `"searchVector" @@ to_tsquery`,
-            "english",
+            "chinese_zh",
             Sequelize.literal(":query")
           )
         );
