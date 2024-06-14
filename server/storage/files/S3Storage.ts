@@ -4,6 +4,7 @@ import {
   S3Client,
   DeleteObjectCommand,
   GetObjectCommand,
+  PutObjectCommand,
   ObjectCannedACL,
 } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
@@ -66,10 +67,10 @@ export default class S3Storage extends BaseStorage {
     const params = {
       Bucket: env.AWS_S3_UPLOAD_BUCKET_NAME,
       Key: key,
-      Expires: 3600,
     };
 
-    return await this.client.getSignedUrlPromise("putObject", params);
+    const command = new PutObjectCommand(params);
+    return await getSignedUrl(this.client, command, { expiresIn: 3600 });
   }
 
   private getPublicEndpoint(isServerUpload?: boolean) {
