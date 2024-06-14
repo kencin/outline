@@ -15,10 +15,8 @@ ARG APP_PATH
 WORKDIR $APP_PATH
 ENV NODE_ENV production
 
-# COPY --from=base $APP_PATH/build ./build
-COPY ./build/server ./server
-# RUN rm -rf $APP_PATH/build/server
 COPY ./build ./build
+COPY ./build/server ./server
 COPY --from=base $APP_PATH/public ./public
 COPY --from=base $APP_PATH/.sequelizerc ./.sequelizerc
 COPY --from=base $APP_PATH/node_modules ./node_modules
