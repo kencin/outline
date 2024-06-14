@@ -105,7 +105,7 @@ export default class SearchHelper {
         "id",
         [
           Sequelize.literal(
-            `ts_rank("searchVector", to_tsquery('english', :query))`
+            `ts_rank(to_tsvector('chinese_zh', text), to_tsquery('chinese_zh', :query))`
           ),
           "searchRanking",
         ],
@@ -236,7 +236,7 @@ export default class SearchHelper {
         "id",
         [
           Sequelize.literal(
-            `ts_rank("searchVector", to_tsquery('english', :query))`
+            `ts_rank(to_tsvector('chinese_zh', text), to_tsquery('chinese_zh', :query))`
           ),
           "searchRanking",
         ],
@@ -468,8 +468,8 @@ export default class SearchHelper {
       if (limitedQuery || iLikeQueries.length === 0) {
         where[Op.and].push(
           Sequelize.fn(
-            `"searchVector" @@ to_tsquery`,
-            "english",
+            `to_tsvector('chinese_zh', text) @@ to_tsquery`,
+            "chinese_zh",
             Sequelize.literal(":query")
           )
         );
