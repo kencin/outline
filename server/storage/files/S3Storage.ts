@@ -205,9 +205,9 @@ export default class S3Storage extends BaseStorage {
           }
 
           stream
-            .on("error", (err) => {
+            .on("error", (error) => {
               dest.end();
-              reject(err);
+              reject(error);
             })
             .pipe(dest);
         });
